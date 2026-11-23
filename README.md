@@ -5,7 +5,7 @@ Hravý tracker kalórií v štýle Duolinga. Odfotíš jedlo, Claude odhadne kal
 ## Ako to funguje
 
 - **PWA (web appka na plochu).** Nepotrebuje Apple developer účet ani App Store. Pošleš link, kamoš otvorí v Safari → **Zdieľať → Pridať na plochu**. Beží na celú obrazovku s ikonou, fotoaparát sa otvorí na jeden klik.
-- **Dáta sú len v telefóne** (IndexedDB). Žiadne účty ani databáza.
+- **Dáta sú v telefóne** (IndexedDB). Voliteľný účet (email + heslo, Supabase) ich synchronizuje, takže sa nestratia pri zmazaní appky ani pri novom mobile. Schéma je v `supabase/migrations`, nasadenie: `supabase db push`.
 - **AI analýza** beží na serveri (`/api/analyze`) cez Claude API (model `claude-opus-5-5`, effort `low`, štruktúrovaný výstup). Fotka sa v telefóne zmenší na 1280 px, takže analýza stojí rádovo 1–3 centy.
 - **Prístup:** predvolene sa používa tvoj serverový kľúč, chránený **pozývacím kódom** (`APP_INVITE_CODE`). Ktokoľvek si môže v profile zadať **vlastný Claude API kľúč**. Ten sa uloží len v jeho telefóne a posiela sa iba s jeho požiadavkami.
 
