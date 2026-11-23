@@ -5,6 +5,7 @@ import { addDays, dayKey } from "./dates";
 import { dayTotals } from "./meals";
 import { computeTargets, type Profile, type Targets } from "./nutrition";
 import type { Meal } from "./types";
+import type { Mood } from "@/components/Mascot";
 
 export const MAX_STARS = 5;
 export const ARREST_HOUR = 19;
@@ -98,8 +99,8 @@ export function computeWanted(meals: Meal[], profile: Profile, onboardedAt?: str
   };
 }
 
-export function wantedLine(w: Wanted, mealsToday: number): { mood: "grumpy" | "watching" | "angry" | "approve" | "arrest"; text: string } {
-  if (w.jailed) return { mood: "arrest", text: "Si v base, kamoš. Do rána žereš akurát tak vzduch." };
+export function wantedLine(w: Wanted, mealsToday: number): { mood: Mood; text: string } {
+  if (w.jailed) return { mood: "jail", text: "Si v base, kamoš. Do rána žereš akurát tak vzduch." };
   if (w.warrant) return { mood: "angry", text: `Zatykač je vydaný. O ${ARREST_HOUR}:00 si pre teba prídem, ty žrút.` };
   if (w.stars >= 4) return { mood: "angry", text: "Ešte jeden rezeň a nasadím ti putá. Vážne." };
   if (w.stars === 3) return { mood: "angry", text: "Do riti, čo to tu žerieš? Radar už pípa." };

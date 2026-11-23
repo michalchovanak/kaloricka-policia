@@ -1,6 +1,6 @@
 // Jednoduchý service worker: offline shell, API nikdy necacheuje.
-const CACHE = "kp-v2";
-const SHELL = ["/", "/icon.svg", "/mascot/grumpy.svg", "/mascot/watching.svg", "/mascot/angry.svg", "/mascot/approve.svg", "/mascot/arrest.svg"];
+const CACHE = "kp-v3";
+const SHELL = ["/", "/icon-192.png", ...["grumpy", "watching", "angry", "approve", "arrest", "jail"].map((m) => `/mascot/${m}.webp`)];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

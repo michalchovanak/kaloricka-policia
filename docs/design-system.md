@@ -4,8 +4,8 @@ A playful, chunky, mobile-first design system for a calorie-tracking PWA with a 
 It borrows the *principles* behind Duolingo's playfulness. It uses none of Duolingo's brand assets: no owl, no green brand colour, no Feather/DIN fonts and no names.
 
 - Tokens: `design/tokens.css`
-- Mascot: `public/mascot/{happy,thinking,celebrate,strict,sleepy}.svg`
-- App icon: `public/icon.svg`
+- Mascot: `public/mascot/{grumpy,watching,angry,approve,arrest,jail}.webp` (512×512, transparent)
+- App icon: `public/icon-{192,512}.png`, `public/icon-maskable-512.png`, `public/apple-touch-icon.png`
 
 ---
 

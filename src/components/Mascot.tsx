@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-/** grumpy = predvolený (ruky prekrížené, okuliare), watching = analyzuje/sleduje,
- *  angry = reve, approve = neochotne uznanlivý, arrest = zatýka (putá). */
-export type Mood = "grumpy" | "watching" | "angry" | "approve" | "arrest";
+/** grumpy = predvolený (ruky prekrížené), watching = vyšetruje lupou,
+ *  angry = reve a ukazuje prstom, approve = neochotný palec hore,
+ *  arrest = zatýka (putá, „stoj“), jail = spokojne točí kľúčmi od basy. */
+export type Mood = "grumpy" | "watching" | "angry" | "approve" | "arrest" | "jail";
 
 export function Mascot({ mood = "grumpy", size = 96, className = "", bob = false }: { mood?: Mood; size?: number; className?: string; bob?: boolean }) {
   return (
     <img
-      src={`/mascot/${mood}.svg`}
+      src={`/mascot/${mood}.webp`}
       alt="Strážmajster Paťo"
       width={size}
       height={size}

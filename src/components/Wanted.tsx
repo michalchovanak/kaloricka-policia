@@ -57,7 +57,7 @@ export function JailOverlay({ wanted }: { wanted: Wanted }) {
       <div className="relative">
         <div className="kp-overline text-kp-siren">Zatknutý</div>
         <h1 className="mt-1 text-5xl font-black tracking-tight">BASA</h1>
-        <Mascot mood="arrest" size={150} className="mx-auto mt-4" />
+        <Mascot mood="jail" size={170} className="mx-auto mt-4" />
         <p className="kp-body-lg mt-4 font-extrabold">Prežral si sa na 5 hviezd. Do 7:00 nežerieš, len voda.</p>
         <div className="kp-num mt-6 text-5xl font-black text-kp-gold">{left}</div>
         <div className="kp-caption mt-1 !text-white/60">do prepustenia</div>
