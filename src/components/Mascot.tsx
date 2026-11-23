@@ -1,11 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
-export type Mood = "happy" | "thinking" | "celebrate" | "strict" | "sleepy";
+/** grumpy = predvolený (ruky prekrížené, okuliare), watching = analyzuje/sleduje,
+ *  angry = reve, approve = neochotne uznanlivý, arrest = zatýka (putá). */
+export type Mood = "grumpy" | "watching" | "angry" | "approve" | "arrest";
 
-export function Mascot({ mood = "happy", size = 96, className = "", bob = false }: { mood?: Mood; size?: number; className?: string; bob?: boolean }) {
+export function Mascot({ mood = "grumpy", size = 96, className = "", bob = false }: { mood?: Mood; size?: number; className?: string; bob?: boolean }) {
   return (
     <img
       src={`/mascot/${mood}.svg`}
-      alt="Paťo, maskot Kalorickej polície"
+      alt="Strážmajster Paťo"
       width={size}
       height={size}
       className={`${bob ? "kp-bob" : ""} ${className} select-none`}
@@ -15,7 +17,7 @@ export function Mascot({ mood = "happy", size = 96, className = "", bob = false 
 }
 
 /** Maskot so speech bubble (Duolingo-style). */
-export function MascotBubble({ mood = "happy", size = 88, children, className = "" }: { mood?: Mood; size?: number; children: React.ReactNode; className?: string }) {
+export function MascotBubble({ mood = "grumpy", size = 88, children, className = "" }: { mood?: Mood; size?: number; children: React.ReactNode; className?: string }) {
   return (
     <div className={`flex items-end gap-2 ${className}`}>
       <Mascot mood={mood} size={size} bob className="shrink-0" />

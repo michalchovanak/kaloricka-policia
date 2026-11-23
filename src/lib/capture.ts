@@ -90,9 +90,9 @@ async function runAnalysis(id: string, base64: string, caption?: string) {
     if (!r.isFood || r.items.length === 0) {
       actions.updateMeal(id, {
         status: "error",
-        title: "Toto nie je jedlo 🤨",
+        title: "Toto nie je jedlo",
         emoji: "🤨",
-        error: r.verdict || "Na fotke som nenašiel jedlo.",
+        error: r.verdict || "Čo mi to posielaš? Odfoť jedlo.",
       });
       return;
     }
@@ -110,7 +110,7 @@ async function runAnalysis(id: string, base64: string, caption?: string) {
   } catch (e) {
     actions.updateMeal(id, {
       status: "error",
-      title: "Analýza zlyhala",
+      title: "Nevyšlo to",
       emoji: "⚠️",
       error: e instanceof Error ? e.message : "Neznáma chyba",
     });

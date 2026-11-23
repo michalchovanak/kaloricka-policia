@@ -78,7 +78,7 @@ export function OptionCard({
 }
 
 /* --------------------------------------------------------------------------
-   Big friendly number stepper with press-and-hold repeat.
+   Big chunky number stepper with press-and-hold repeat.
    -------------------------------------------------------------------------- */
 const parse = (t: string) => (t === "" ? NaN : Number(t));
 
@@ -224,7 +224,7 @@ export function NumberStepper({
         </button>
       </div>
       <p className={`kp-caption mt-1 text-center ${out ? "text-kp-siren-ink!" : ""}`}>
-        {out ? `Zadaj číslo od ${min} do ${max} ${unit}` : `Podrž + alebo − pre rýchlejšie · ${min}–${max} ${unit}`}
+        {out ? `Od ${min} do ${max} ${unit}. Nevymýšľaj.` : `${min}–${max} ${unit}`}
       </p>
     </div>
   );
@@ -378,11 +378,11 @@ export function OnboardingKeyframes() {
 @keyframes kpob-in-back { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: none; } }
 @keyframes kpob-tick { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
 @keyframes kpob-hero { 0% { transform: scale(0.4) rotate(-12deg); opacity: 0; } 60% { transform: scale(1.1) rotate(4deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
-@keyframes kpob-badge { 0%, 100% { transform: rotate(-3deg) scale(1); } 50% { transform: rotate(3deg) scale(1.04); } }
+@keyframes kpob-star { 0% { transform: scale(0) rotate(-40deg); opacity: 0; } 70% { transform: scale(1.25) rotate(8deg); opacity: 1; } 100% { transform: none; opacity: 1; } }
 .kpob-screen-fwd { animation: kpob-in-fwd 340ms var(--kp-ease-out) both; }
 .kpob-screen-back { animation: kpob-in-back 340ms var(--kp-ease-out) both; }
 .kpob-hero { animation: kpob-hero 700ms var(--kp-ease-pop) both; }
-.kpob-badge { animation: kpob-badge 2.8s var(--kp-ease-in-out) infinite; }
+.kpob-star { display: inline-block; animation: kpob-star 420ms var(--kp-ease-pop) both; animation-delay: calc(400ms + var(--i, 0) * 110ms); }
 `}</style>
   );
 }

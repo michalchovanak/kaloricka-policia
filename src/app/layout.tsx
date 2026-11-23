@@ -33,6 +33,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="sk" className={nunito.variable} style={{ ["--kp-font" as string]: "var(--font-nunito), ui-rounded, system-ui, sans-serif" }}>
       <body>
+        {/* Android: zachyť inštalačnú výzvu skôr, než sa načíta React. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__kpInstall=e;});",
+          }}
+        />
         <AppShell>{children}</AppShell>
       </body>
     </html>

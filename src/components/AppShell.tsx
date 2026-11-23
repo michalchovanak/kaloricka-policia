@@ -26,7 +26,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!loaded || (!profile && !isOnboarding)) {
     return (
       <div className="grid min-h-dvh place-items-center">
-        <Mascot mood="happy" size={120} bob />
+        <Mascot mood="grumpy" size={120} bob />
       </div>
     );
   }

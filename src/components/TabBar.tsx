@@ -5,10 +5,8 @@ import { useCapture } from "./CaptureProvider";
 
 const TABS = [
   { href: "/", label: "Dnes", icon: "🏠" },
-  { href: "/stats", label: "Štatistiky", icon: "📊" },
   { href: "#camera", label: "", icon: "" },
-  { href: "/badges", label: "Odznaky", icon: "🏅" },
-  { href: "/profile", label: "Ja", icon: "👮" },
+  { href: "/stats", label: "Štatistiky", icon: "📊" },
 ];
 
 export function TabBar() {

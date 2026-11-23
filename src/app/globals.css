@@ -48,3 +48,11 @@ input, select, textarea { font-size: 16px; font-family: inherit; }
   background: linear-gradient(to bottom, transparent, rgba(59, 91, 246, 0.45), transparent);
   animation: kp-scan 1.4s var(--kp-ease-in-out) infinite alternate;
 }
+
+/* Mreže do basy */
+.kp-jail-bars {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 46px, #8A8FA8 46px 58px, #C9CCDA 58px 62px, #6B7090 62px 66px),
+    linear-gradient(to bottom, transparent 0 14%, #6B7090 14% 16.5%, transparent 16.5% 84%, #6B7090 84% 86.5%, transparent 86.5%);
+  opacity: 0.55;
+}
