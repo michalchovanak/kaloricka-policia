@@ -52,7 +52,18 @@ export interface Settings {
   ownApiKey: string;
 }
 
+/** Stav synchronizácie s účtom (Supabase). */
+export interface SyncMeta {
+  userId?: string;
+  email?: string;
+  lastPull?: string; // serverový čas posledného stiahnutého záznamu
+  dirtyMeals: Record<string, number>; // id -> verzia lokálnej zmeny, čaká na odoslanie
+  deletedMeals: string[];
+  profileDirty: number; // 0 = odoslané
+}
+
 export interface AppState {
+  sync: SyncMeta;
   profile: Profile | null;
   meals: Meal[];
   water: Record<string, number>; // dayKey -> ml

@@ -2,6 +2,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { loadState, useAppState } from "@/lib/store";
+import { startSync } from "@/lib/sync";
 import { CaptureProvider } from "./CaptureProvider";
 import { TabBar } from "./TabBar";
 import { Mascot } from "./Mascot";
@@ -13,7 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isOnboarding = path.startsWith("/onboarding");
 
   useEffect(() => {
-    void loadState();
+    void loadState().then(startSync);
     if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }

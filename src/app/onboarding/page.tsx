@@ -4,12 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { Mascot, MascotBubble, type Mood } from "@/components/Mascot";
 import { celebrate, haptic } from "@/components/confetti";
-import { actions, useAppState } from "@/lib/store";
+import { AuthForm } from "@/components/AuthForm";
+import { actions, getState, useAppState } from "@/lib/store";
 import { clamp, computeTargets, type Activity, type Goal, type Profile, type Sex } from "@/lib/nutrition";
 import { InstallGate, detectGate, type GateKind } from "./InstallGate";
 import { BigTextInput, NumberStepper, OnboardingKeyframes, OptionCard, StatTile, useCountUp } from "./parts";
 
-type Step = "welcome" | "name" | "sex" | "age" | "height" | "weight" | "activity" | "goal" | "invite" | "plan";
+type Step = "welcome" | "name" | "sex" | "age" | "height" | "weight" | "activity" | "goal" | "invite" | "plan" | "account" | "login";
 
 const FLOW: Step[] = ["welcome", "name", "sex", "age", "height", "weight", "activity", "goal", "invite", "plan"];
 
@@ -115,13 +116,15 @@ export default function OnboardingPage() {
   const next = () => {
     if (!canContinue) return;
     haptic(12);
-    if (step === "plan") return finish();
+    if (step === "plan") return go("account", "fwd");
     const n = FLOW[idx + 1];
     if (n) go(n, "fwd");
   };
 
   const back = () => {
     haptic(6);
+    if (step === "login") return go("welcome", "back");
+    if (step === "account") return go("plan", "back");
     const p = FLOW[idx - 1];
     if (p) go(p, "back");
   };
@@ -132,9 +135,8 @@ export default function OnboardingPage() {
     go("plan", "fwd");
   };
 
-  const finish = () => {
+  const saveLocal = () => {
     if (!profile) return;
-    setFinishing(true);
     try {
       void navigator.storage?.persist?.().catch(() => {});
     } catch {
@@ -142,7 +144,19 @@ export default function OnboardingPage() {
     }
     actions.setSettings({ inviteCode: invite.trim() });
     actions.setProfile(profile);
+  };
+
+  const finish = () => {
+    if (!profile) return;
+    setFinishing(true);
+    saveLocal();
     router.replace("/");
+  };
+
+  // Prihlásenie z úvodu: ak má účet profil, rovno dnu, inak pokračuj výsluchom.
+  const afterLogin = () => {
+    if (getState().profile) router.replace("/");
+    else go("name", "fwd");
   };
 
   // Plan reveal.
@@ -184,7 +198,7 @@ export default function OnboardingPage() {
                   <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <div
+              {step === "login" || step === "account" ? <div className="flex-1" /> : <div
                 className="progress-3d flex-1"
                 role="progressbar"
                 aria-label="Priebeh výsluchu"
@@ -194,9 +208,9 @@ export default function OnboardingPage() {
                 style={{ ["--_fill" as string]: step === "plan" ? "var(--kp-siren)" : "var(--kp-blue)" }}
               >
                 <span style={{ "--value": `${progress}%` } as CSSProperties} />
-              </div>
+              </div>}
               <span className="kp-overline kp-num w-12 shrink-0 text-center text-kp-muted">
-                {step === "plan" ? "🚨" : `${idx}/${FLOW.length - 2}`}
+                {step === "plan" ? "🚨" : idx > 0 ? `${idx}/${FLOW.length - 2}` : ""}
               </span>
             </header>
           ) : null}
@@ -206,6 +220,22 @@ export default function OnboardingPage() {
               <Welcome />
             ) : step === "plan" && profile ? (
               <PlanReveal profile={profile} firstName={firstName} />
+            ) : step === "login" ? (
+              <>
+                <MascotBubble mood="watching" size={92} className="mt-2 mb-6">
+                  <p className="font-extrabold text-kp-ink">Ukáž preukaz. Email a heslo.</p>
+                  <p className="kp-caption mt-1">Stiahnem ti celý spis.</p>
+                </MascotBubble>
+                <AuthForm submitLabel="Prihlásiť" onDone={afterLogin} />
+              </>
+            ) : step === "account" && profile ? (
+              <>
+                <MascotBubble mood="grumpy" size={92} className="mt-2 mb-6">
+                  <p className="font-extrabold text-kp-ink">Založ si spis. Email a heslo.</p>
+                  <p className="kp-caption mt-1">Keď zmažeš appku alebo zmeníš mobil, nič nestratíš.</p>
+                </MascotBubble>
+                <AuthForm newAccount submitLabel="Uložiť spis" beforeSubmit={saveLocal} onDone={() => router.replace("/")} />
+              </>
             ) : (
               <>
                 {bubble ? (
@@ -283,8 +313,17 @@ export default function OnboardingPage() {
 
           <footer className="kp-footer-cta z-10 flex flex-col items-stretch gap-1">
             {step === "welcome" ? (
-              <button type="button" className="btn-3d btn-3d--block btn-3d--lg" onClick={next}>
-                Rozkaz, šéfe
+              <>
+                <button type="button" className="btn-3d btn-3d--block btn-3d--lg" onClick={next}>
+                  Rozkaz, šéfe
+                </button>
+                <button type="button" className="btn-ghost" onClick={() => go("login", "fwd")}>
+                  Už mám účet
+                </button>
+              </>
+            ) : step === "login" ? null : step === "account" ? (
+              <button type="button" className="btn-ghost" onClick={finish} disabled={finishing}>
+                Neskôr
               </button>
             ) : step === "plan" ? (
               <button type="button" className="btn-3d btn-3d--block btn-3d--lg btn-3d--danger" onClick={next} disabled={!canContinue}>

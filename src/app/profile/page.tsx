@@ -5,6 +5,8 @@ import { actions, getState, useAppState } from "@/lib/store";
 import { dayKey } from "@/lib/dates";
 import { ACTIVITY_LABELS, GOAL_LABELS, computeTargets, type Activity, type Goal, type Pace, type Profile, type Sex } from "@/lib/nutrition";
 import type { Meal, Settings } from "@/lib/types";
+import { AuthForm } from "@/components/AuthForm";
+import { deleteEverything, signOut, syncNow } from "@/lib/sync";
 
 /* ---------- malé stavebné kocky ---------- */
 
@@ -315,7 +317,7 @@ function importBackup(raw: string): number {
   }
   const profile: Profile = { ...data.profile, pace: data.profile.pace ?? "normal" };
   const meals = data.meals as Meal[];
-  actions.resetAll();
+  actions.resetAll(true);
   actions.setProfile(profile);
   if (isObj(data.settings)) {
     const s = data.settings;
@@ -329,7 +331,47 @@ function importBackup(raw: string): number {
   return meals.length;
 }
 
+function AccountSection() {
+  const { sync } = useAppState();
+  const [busy, setBusy] = useState(false);
+  const pending = Object.keys(sync.dirtyMeals).length + sync.deletedMeals.length + (sync.profileDirty ? 1 : 0);
+
+  if (!sync.userId) {
+    return (
+      <section className="card-3d space-y-3 p-4">
+        <p className="text-[15px] font-extrabold leading-snug text-kp-ink-2">
+          Bez účtu sú dáta len v tomto telefóne. Prihlás sa a nič nestratíš, ani keď zmeníš mobil.
+        </p>
+        <AuthForm submitLabel="Prihlásiť / založiť účet" onDone={() => {}} />
+      </section>
+    );
+  }
+
+  const logout = async () => {
+    if (!window.confirm("Odhlásiť? Dáta ostanú v účte, z telefónu zmiznú.")) return;
+    setBusy(true);
+    await signOut();
+    location.href = "/onboarding";
+  };
+
+  return (
+    <section className="card-3d space-y-3 p-4">
+      <div>
+        <div className="kp-overline text-kp-muted">Prihlásený</div>
+        <div className="break-all text-[17px] font-black">{sync.email}</div>
+        <button type="button" onClick={() => void syncNow()} className="kp-caption mt-1 text-left">
+          {pending ? `☁️ Čaká na odoslanie: ${pending}` : "✅ Všetko je uložené v účte"}
+        </button>
+      </div>
+      <button type="button" onClick={logout} disabled={busy} className="btn-3d btn-3d--secondary btn-3d--sm btn-3d--block">
+        {busy ? "Odhlasujem…" : "Odhlásiť"}
+      </button>
+    </section>
+  );
+}
+
 function DataSection() {
+  const { sync } = useAppState();
   const [confirming, setConfirming] = useState(false);
   const [wiping, setWiping] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -363,9 +405,9 @@ function DataSection() {
     }
   };
 
-  const wipe = () => {
+  const wipe = async () => {
     setWiping(true);
-    actions.resetAll();
+    await deleteEverything().catch(() => actions.resetAll());
     // Krátka pauza, aby sa stihol uložiť prázdny stav do IndexedDB.
     setTimeout(() => {
       location.href = "/onboarding";
@@ -374,7 +416,7 @@ function DataSection() {
 
   return (
     <section className="card-3d space-y-3 p-4">
-      <p className="text-[15px] font-extrabold leading-snug text-kp-ink-2">Dáta sú len v tomto telefóne. Ak zmažeš appku z plochy, zmiznú.</p>
+      <p className="text-[15px] font-extrabold leading-snug text-kp-ink-2">Záloha do súboru, keby niečo.</p>
 
       <div className="grid grid-cols-2 gap-2">
         <button type="button" onClick={exportData} className="btn-3d btn-3d--secondary btn-3d--sm">
@@ -393,7 +435,7 @@ function DataSection() {
         </button>
       ) : (
         <div className="kp-shake rounded-2xl border-2 border-kp-siren bg-kp-siren-tint p-3">
-          <p className="mb-3 text-[15px] font-extrabold leading-snug text-kp-siren-ink">Zmaže sa úplne všetko. Späť to nejde.</p>
+          <p className="mb-3 text-[15px] font-extrabold leading-snug text-kp-siren-ink">{sync.userId ? "Zmaže sa všetko, aj v účte." : "Zmaže sa úplne všetko."} Späť to nejde.</p>
           <div className="grid grid-cols-2 gap-2">
             <button type="button" onClick={() => setConfirming(false)} className="btn-3d btn-3d--secondary btn-3d--sm" disabled={wiping}>
               Nie, späť
@@ -418,6 +460,9 @@ export default function ProfilePage() {
   return (
     <div className="pb-6 pt-2">
       <h1 className="kp-h1">Ja</h1>
+
+      <SectionTitle>Účet</SectionTitle>
+      <AccountSection />
 
       <SectionTitle>Moje údaje</SectionTitle>
       <ProfileForm key={`p-${onboardedAt}`} profile={profile} />
