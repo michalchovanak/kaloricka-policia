@@ -7,6 +7,7 @@ import { celebrate, haptic } from "@/components/confetti";
 import { AuthForm } from "@/components/AuthForm";
 import { actions, getState, useAppState } from "@/lib/store";
 import { clamp, computeTargets, type Activity, type Goal, type Profile, type Sex } from "@/lib/nutrition";
+import { g } from "@/lib/voice";
 import { InstallGate, detectGate, type GateKind } from "./InstallGate";
 import { BigTextInput, NumberStepper, OnboardingKeyframes, OptionCard, StatTile, useCountUp } from "./parts";
 
@@ -22,10 +23,12 @@ const RANGE = {
 
 const SEX_OPTIONS: { key: Sex; label: string; emoji: string }[] = [
   { key: "male", label: "Chlap", emoji: "👨" },
-  { key: "female", label: "Baba", emoji: "👩" },
+  { key: "female", label: "Žena", emoji: "👩" },
 ];
 
-const ACTIVITY_OPTIONS: { key: Activity; label: string; desc: string; emoji: string }[] = [
+type Opt<K> = { key: K; label: string; desc: string; emoji: string };
+
+const ACTIVITY_OPTIONS: Opt<Activity>[] = [
   { key: "sedentary", label: "Gauč", desc: "Kancel, auto, gauč. Hanba.", emoji: "🛋️" },
   { key: "light", label: "Trochu", desc: "Šport 1–3× do týždňa", emoji: "🚶" },
   { key: "moderate", label: "Aktívny", desc: "Šport 3–5× do týždňa", emoji: "🚴" },
@@ -33,10 +36,25 @@ const ACTIVITY_OPTIONS: { key: Activity; label: string; desc: string; emoji: str
   { key: "extreme", label: "Beast mode", desc: "Fyzická robota + tréning", emoji: "🦍" },
 ];
 
-const GOAL_OPTIONS: { key: Goal; label: string; desc: string; emoji: string }[] = [
+const GOAL_OPTIONS: Opt<Goal>[] = [
   { key: "lose", label: "Schudnúť", desc: "Konečne.", emoji: "📉" },
   { key: "maintain", label: "Udržať", desc: "Ani deko navyše.", emoji: "⚖️" },
   { key: "gain", label: "Nabrať svaly", desc: "Svaly, nie sadlo.", emoji: "💪" },
+];
+
+// Kačka: o pohybe ako o sile a energii, bez hanby a bez reči o tele.
+const ACTIVITY_OPTIONS_F: Opt<Activity>[] = [
+  { key: "sedentary", label: "Skôr sedím", desc: "Kancel, auto, gauč", emoji: "🛋️" },
+  { key: "light", label: "Trochu", desc: "Pohyb 1–3× do týždňa", emoji: "🚶‍♀️" },
+  { key: "moderate", label: "Aktívna", desc: "Tréning 3–5× do týždňa", emoji: "🚴‍♀️" },
+  { key: "very", label: "Drina", desc: "Tréning 6–7× do týždňa", emoji: "🏋️‍♀️" },
+  { key: "extreme", label: "Beast mode", desc: "Fyzická robota + tréning", emoji: "🦍" },
+];
+
+const GOAL_OPTIONS_F: Opt<Goal>[] = [
+  { key: "lose", label: "Schudnúť", desc: "Postupne a bez hladoviek.", emoji: "📉" },
+  { key: "maintain", label: "Udržať", desc: "Držať formu a energiu.", emoji: "⚖️" },
+  { key: "gain", label: "Nabrať svaly", desc: "Sila, nie len čísla na váhe.", emoji: "💪" },
 ];
 
 const isNum = (v: number, k: keyof typeof RANGE) => Number.isFinite(v) && v >= RANGE[k].min && v <= RANGE[k].max;
@@ -169,7 +187,10 @@ export default function OnboardingPage() {
     return () => clearTimeout(t);
   }, [step, gate]);
 
-  const bubble = bubbleFor(step, { firstName, activity, goal });
+  const bubble = bubbleFor(step, { firstName, activity, goal, sex });
+  const voice: Sex = sex ?? "male";
+  const activityOptions = g(sex, ACTIVITY_OPTIONS, ACTIVITY_OPTIONS_F);
+  const goalOptions = g(sex, GOAL_OPTIONS, GOAL_OPTIONS_F);
 
   return (
     <div
@@ -222,7 +243,7 @@ export default function OnboardingPage() {
               <PlanReveal profile={profile} firstName={firstName} />
             ) : step === "login" ? (
               <>
-                <MascotBubble mood="watching" size={92} className="mt-2 mb-6">
+                <MascotBubble mood="watching" size={92} sex="male" className="mt-2 mb-6">
                   <p className="font-extrabold text-kp-ink">Ukáž preukaz. Email a heslo.</p>
                   <p className="kp-caption mt-1">Stiahnem ti celý spis.</p>
                 </MascotBubble>
@@ -230,7 +251,7 @@ export default function OnboardingPage() {
               </>
             ) : step === "account" && profile ? (
               <>
-                <MascotBubble mood="grumpy" size={92} className="mt-2 mb-6">
+                <MascotBubble mood="grumpy" size={92} sex={voice} className="mt-2 mb-6">
                   <p className="font-extrabold text-kp-ink">Založ si spis. Email a heslo.</p>
                   <p className="kp-caption mt-1">Keď zmažeš appku alebo zmeníš mobil, nič nestratíš.</p>
                 </MascotBubble>
@@ -239,7 +260,7 @@ export default function OnboardingPage() {
             ) : (
               <>
                 {bubble ? (
-                  <MascotBubble mood={bubble.mood} size={92} className="mt-2 mb-6">
+                  <MascotBubble key={`${bubble.sex}-${step}`} mood={bubble.mood} size={92} sex={bubble.sex} className="mt-2 mb-6">
                     <p className="font-extrabold text-kp-ink">{bubble.text}</p>
                     {bubble.sub ? <p className="kp-caption mt-1">{bubble.sub}</p> : null}
                   </MascotBubble>
@@ -279,7 +300,7 @@ export default function OnboardingPage() {
 
                   {step === "activity" ? (
                     <div role="radiogroup" aria-label="Aktivita" className="flex flex-col gap-2.5">
-                      {ACTIVITY_OPTIONS.map((o, i) => (
+                      {activityOptions.map((o, i) => (
                         <OptionCard key={o.key} index={i} emoji={o.emoji} label={o.label} desc={o.desc} selected={activity === o.key} onSelect={() => setActivity(o.key)} />
                       ))}
                     </div>
@@ -287,7 +308,7 @@ export default function OnboardingPage() {
 
                   {step === "goal" ? (
                     <div role="radiogroup" aria-label="Cieľ" className="flex flex-col gap-2.5">
-                      {GOAL_OPTIONS.map((o, i) => (
+                      {goalOptions.map((o, i) => (
                         <OptionCard key={o.key} index={i} emoji={o.emoji} label={o.label} desc={o.desc} selected={goal === o.key} onSelect={() => setGoal(o.key)} />
                       ))}
                     </div>
@@ -297,7 +318,7 @@ export default function OnboardingPage() {
                     <BigTextInput
                       value={invite}
                       onChange={(v) => setInvite(v.replace(/\s+/g, ""))}
-                      placeholder="Kód od kamoša"
+                      placeholder={g(sex, "Kód od kamoša", "Pozývací kód")}
                       autoCapitalize="characters"
                       autoComplete="off"
                       maxLength={40}
@@ -327,7 +348,7 @@ export default function OnboardingPage() {
               </button>
             ) : step === "plan" ? (
               <button type="button" className="btn-3d btn-3d--block btn-3d--lg btn-3d--danger" onClick={next} disabled={!canContinue}>
-                Jasné, nebudem žrať 🚓
+                {g(sex, "Jasné, nebudem žrať 🚓", "Platí, ideme na to 🚓")}
               </button>
             ) : (
               <>
@@ -352,43 +373,78 @@ export default function OnboardingPage() {
 
 function bubbleFor(
   step: Step,
-  ctx: { firstName: string; activity: Activity | null; goal: Goal | null },
-): { mood: Mood; text: ReactNode; sub?: ReactNode } | null {
-  const { firstName, activity, goal } = ctx;
+  ctx: { firstName: string; activity: Activity | null; goal: Goal | null; sex: Sex | null },
+): { mood: Mood; text: ReactNode; sub?: ReactNode; sex: Sex } | null {
+  const { firstName, activity, goal, sex } = ctx;
   const ask = (q: string) => (firstName ? `${firstName}, ${q}` : cap(q));
+  // Do výberu pohlavia vypočúva Paťo. Ženy potom preberá Kačka.
+  const f = sex === "female";
+  const who: Sex = f ? "female" : "male";
   switch (step) {
     case "name":
-      return { mood: "watching", text: "Meno. Nech viem, koho budem zatýkať." };
+      return { mood: "watching", sex: "male", text: "Meno. Nech viem, koho budem zatýkať." };
     case "sex":
-      return { mood: "grumpy", text: firstName ? `${firstName}. Hm. Chlap alebo baba?` : "Anonym, hm. Chlap alebo baba?" };
-    case "age":
-      return { mood: "watching", text: ask("koľko máš rokov? A neklam.") };
-    case "height":
-      return { mood: "grumpy", text: "Koľko meriaš? Nenaťahuj sa, kurva." };
-    case "weight":
-      return { mood: "watching", text: "Koľko vážiš? Váha neklame. Ty áno." };
-    case "activity": {
-      const react: Record<Activity, { mood: Mood; sub: string }> = {
-        sedentary: { mood: "angry", sub: "Gauč. Jasné. Do riti." },
-        light: { mood: "grumpy", sub: "Slabota. Ale budiž." },
-        moderate: { mood: "watching", sub: "To si ešte overím." },
-        very: { mood: "approve", sub: "Hm. Nie je to zlé." },
-        extreme: { mood: "approve", sub: "Dobre, rešpekt. Neochotne." },
+      if (f) return { mood: "approve", sex: "female", text: "Kvak. Tak toto je môj prípad.", sub: "Som Strážmajsterka Kačka. Odteraz ťa strážim ja." };
+      return {
+        mood: sex ? "approve" : "grumpy",
+        sex: "male",
+        text: firstName ? `${firstName}. Hm. Chlap alebo žena?` : "Anonym, hm. Chlap alebo žena?",
+        sub: sex ? "Chlap. Dobre, ostávaš u mňa." : undefined,
       };
+    case "age":
+      return { mood: "watching", sex: who, text: ask(f ? "koľko máš rokov? Ostane to medzi nami." : "koľko máš rokov? A neklam.") };
+    case "height":
+      return { mood: "grumpy", sex: who, text: f ? "Koľko meriaš? Bez podpätkov, prosím." : "Koľko meriaš? Nenaťahuj sa, kurva." };
+    case "weight":
+      return f
+        ? { mood: "watching", sex: who, text: "Koľko vážiš? Je to len číslo do výpočtu, nie známka.", sub: "Nikomu to nepoviem. Ani váhe." }
+        : { mood: "watching", sex: who, text: "Koľko vážiš? Váha neklame. Ty áno." };
+    case "activity": {
+      const react: Record<Activity, { mood: Mood; sub: string }> = f
+        ? {
+            sedentary: { mood: "grumpy", sub: "Dobre, začneme pomaly. Aj prechádzka sa ráta." },
+            light: { mood: "watching", sub: "Dobrý základ. Na tom sa dá stavať." },
+            moderate: { mood: "approve", sub: "Pekný rytmus. To sa mi páči." },
+            very: { mood: "approve", sub: "Frajerka. Rešpekt." },
+            extreme: { mood: "approve", sub: "Beast mode. Tak to ťa treba poriadne kŕmiť." },
+          }
+        : {
+            sedentary: { mood: "angry", sub: "Gauč. Jasné. Do riti." },
+            light: { mood: "grumpy", sub: "Slabota. Ale budiž." },
+            moderate: { mood: "watching", sub: "To si ešte overím." },
+            very: { mood: "approve", sub: "Hm. Nie je to zlé." },
+            extreme: { mood: "approve", sub: "Dobre, rešpekt. Neochotne." },
+          };
       const r = activity ? react[activity] : null;
-      return { mood: r?.mood ?? "grumpy", text: "Koľko sa hýbeš? Cesta k chladničke sa nepočíta.", sub: r?.sub };
+      return {
+        mood: r?.mood ?? "grumpy",
+        sex: who,
+        text: f ? "Koľko sa hýbeš? Beh za autobusom sa ráta, ale málo." : "Koľko sa hýbeš? Cesta k chladničke sa nepočíta.",
+        sub: r?.sub,
+      };
     }
     case "goal": {
-      const react: Record<Goal, { mood: Mood; sub: string }> = {
-        lose: { mood: "approve", sub: "Konečne rozumné slovo." },
-        maintain: { mood: "grumpy", sub: "Udržať. Dúfam, že nie to brucho." },
-        gain: { mood: "watching", sub: "Svaly. Nie pivo a burgre „na objem“." },
-      };
+      const react: Record<Goal, { mood: Mood; sub: string }> = f
+        ? {
+            lose: { mood: "approve", sub: "Dobre. Pomaly, s bielkovinami a bez hladoviek." },
+            maintain: { mood: "watching", sub: "Držať formu. Postrážim to." },
+            gain: { mood: "approve", sub: "Sila! Svaly sa robia v posilke aj v kuchyni." },
+          }
+        : {
+            lose: { mood: "approve", sub: "Konečne rozumné slovo." },
+            maintain: { mood: "grumpy", sub: "Udržať. Dúfam, že nie to brucho." },
+            gain: { mood: "watching", sub: "Svaly. Nie pivo a burgre „na objem“." },
+          };
       const r = goal ? react[goal] : null;
-      return { mood: r?.mood ?? "watching", text: ask("čo chceš?"), sub: r?.sub };
+      return { mood: r?.mood ?? "watching", sex: who, text: ask(f ? "čo chceš dosiahnuť?" : "čo chceš?"), sub: r?.sub };
     }
     case "invite":
-      return { mood: "watching", text: "Máš kód od kamoša? Bez neho ti nič nespočítam.", sub: "Nemáš? V profile si dáš vlastný API kľúč." };
+      return {
+        mood: "watching",
+        sex: who,
+        text: f ? "Máš pozývací kód? Bez neho ti nič nespočítam." : "Máš kód od kamoša? Bez neho ti nič nespočítam.",
+        sub: "Nemáš? V profile si dáš vlastný API kľúč.",
+      };
     default:
       return null;
   }
@@ -404,15 +460,18 @@ function Welcome() {
       <div className="relative">
         <span aria-hidden className="absolute inset-x-6 bottom-1 h-5 rounded-[50%] bg-kp-sunken" />
         <div className="kpob-hero relative">
-          <Mascot mood="grumpy" size={200} bob />
+          <div className="flex items-end">
+            <Mascot mood="grumpy" size={180} sex="male" bob />
+            <Mascot mood="approve" size={150} sex="female" whenMissing="hide" bob className="-ml-10" />
+          </div>
         </div>
       </div>
 
       <h1 className="kp-h1 kp-pop-in kp-stagger mt-5 text-balance" style={{ "--i": 2 } as CSSProperties}>
-        Som Strážmajster Paťo.
+        Kalorická polícia hlási službu.
       </h1>
       <p className="kp-body-lg kp-pop-in kp-stagger mt-2 text-balance text-kp-ink-2" style={{ "--i": 3 } as CSSProperties}>
-        Odfotíš, čo žerieš. Ja sledujem, či nepriberáš.
+        Odfotíš jedlo, my strážime plán. Chlapov má na starosti Paťo, ženy Kačka.
       </p>
 
       <div className="kp-pop-in kp-stagger mt-7 w-full" style={{ "--i": 4 } as CSSProperties}>
@@ -431,7 +490,7 @@ function Welcome() {
             ))}
           </div>
           <p className="mt-2 text-[0.9375rem] leading-snug font-bold text-kp-ink-2 text-balance">
-            Keď žerieš zle alebo nezapisuješ, stúpa ti hľadanosť. Pri piatich hviezdach ideš do basy.
+            Keď ješ mimo plánu alebo nezapisuješ, stúpa ti hľadanosť. Pri piatich hviezdach ideš do basy.
           </p>
         </div>
       </div>
@@ -447,11 +506,19 @@ function PlanReveal({ profile, firstName }: { profile: Profile; firstName: strin
 
   return (
     <div className="flex flex-1 flex-col">
-      <MascotBubble mood="arrest" size={92} className="mt-2 mb-5">
-        <p className="font-extrabold text-kp-ink">
-          {firstName ? `${firstName}, toto je tvoj limit.` : "Toto je tvoj limit."} Prekročíš a ideš sedieť.
-        </p>
-      </MascotBubble>
+      {profile.sex === "female" ? (
+        <MascotBubble mood="approve" size={92} sex="female" className="mt-2 mb-5">
+          <p className="font-extrabold text-kp-ink">
+            {firstName ? `${firstName}, toto je tvoj denný plán.` : "Toto je tvoj denný plán."} Ty dodáš fotky, ja dohľad.
+          </p>
+        </MascotBubble>
+      ) : (
+        <MascotBubble mood="arrest" size={92} sex="male" className="mt-2 mb-5">
+          <p className="font-extrabold text-kp-ink">
+            {firstName ? `${firstName}, toto je tvoj limit.` : "Toto je tvoj limit."} Prekročíš a ideš sedieť.
+          </p>
+        </MascotBubble>
+      )}
 
       <div className="kp-pop-in kp-stagger" style={{ "--i": 1 } as CSSProperties}>
         <section className="card-3d relative overflow-hidden px-5 pt-6 pb-5 text-center" aria-label="Denný limit kalórií">

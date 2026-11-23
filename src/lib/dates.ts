@@ -39,3 +39,14 @@ export function mealSlot(iso: string): string {
   if (h < 18) return "Olovrant";
   return "Večera";
 }
+
+/** „14:05“ pre dnešok, „Včera 14:05“, inak „Po 3. 11. 14:05“. */
+export function whenLabel(iso: string): string {
+  const d = new Date(iso);
+  const key = dayKey(d);
+  const time = timeLabel(iso);
+  const today = dayKey();
+  if (key === today) return time;
+  if (key === addDays(today, -1)) return `Včera ${time}`;
+  return `${weekdayShort(key)} ${d.getDate()}. ${d.getMonth() + 1}. ${time}`;
+}

@@ -13,6 +13,7 @@ import { computeTargets } from "@/lib/nutrition";
 import { useAppState } from "@/lib/store";
 import type { Meal } from "@/lib/types";
 import { computeWanted, wantedLine } from "@/lib/wanted";
+import { g } from "@/lib/voice";
 
 /** Prepočet každú minútu, aby zatknutie o 19:00 a prepustenie o 7:00 prebehli samé. */
 function useMinuteTick() {
@@ -26,7 +27,7 @@ function useMinuteTick() {
 
 export default function TodayPage() {
   const { profile, meals, onboardedAt } = useAppState();
-  const { openCamera, showMeal } = useCapture();
+  const { openCamera, openGallery, showMeal } = useCapture();
   const tick = useMinuteTick();
   const today = dayKey();
 
@@ -42,8 +43,8 @@ export default function TodayPage() {
   const { t, todays, tot, wanted } = data;
   const left = Math.round(t.kcal - tot.kcal);
   const line = todays.some((m) => m.status === "analyzing")
-    ? { mood: "watching" as const, text: "Ukáž, čo si to tam natlačil… vyšetrujem." }
-    : wantedLine(wanted, todays.filter((m) => m.status === "done").length);
+    ? { mood: "watching" as const, text: g(profile.sex, "Ukáž, čo si to tam natlačil… vyšetrujem.", "Ukáž, čo máme na tanieri… vyšetrujem.") }
+    : wantedLine(wanted, todays.filter((m) => m.status === "done").length, profile.sex);
 
   return (
     <div className="space-y-4 pb-6">
@@ -86,7 +87,10 @@ export default function TodayPage() {
 
       <section>
         {todays.length === 0 ? (
-          <button className="btn-3d btn-3d--lg btn-3d--block" onClick={openCamera}>📸 Odfotiť jedlo</button>
+          <>
+            <button className="btn-3d btn-3d--lg btn-3d--block" onClick={openCamera}>📸 Odfotiť jedlo</button>
+            <button className="btn-ghost mt-1 w-full" onClick={openGallery}>🖼️ Nahrať fotku z galérie</button>
+          </>
         ) : (
           <ul className="space-y-2">
             {todays.map((m) => (

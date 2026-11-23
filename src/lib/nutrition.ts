@@ -23,12 +23,12 @@ export const ACTIVITY: Record<Activity, number> = {
   extreme: 1.9,
 };
 
-export const ACTIVITY_LABELS: Record<Activity, { label: string; desc: string; emoji: string }> = {
-  sedentary: { label: "Gauč", desc: "Kancel, auto, takmer žiadny šport", emoji: "🛋️" },
-  light: { label: "Ľahko aktívny", desc: "Prechádzky, šport 1–3× týždenne", emoji: "🚶" },
-  moderate: { label: "Aktívny", desc: "Šport 3–5× týždenne alebo veľa chôdze", emoji: "🚴" },
-  very: { label: "Veľmi aktívny", desc: "Tvrdý tréning 6–7× týždenne", emoji: "🏋️" },
-  extreme: { label: "Beast mode", desc: "Fyzická práca + denný tréning", emoji: "🦍" },
+export const ACTIVITY_LABELS: Record<Activity, { label: string; labelF: string; desc: string; emoji: string }> = {
+  sedentary: { label: "Gauč", labelF: "Skôr sedím", desc: "Kancel, auto, takmer žiadny šport", emoji: "🛋️" },
+  light: { label: "Ľahko aktívny", labelF: "Ľahko aktívna", desc: "Prechádzky, šport 1–3× týždenne", emoji: "🚶" },
+  moderate: { label: "Aktívny", labelF: "Aktívna", desc: "Šport 3–5× týždenne alebo veľa chôdze", emoji: "🚴" },
+  very: { label: "Veľmi aktívny", labelF: "Veľmi aktívna", desc: "Tvrdý tréning 6–7× týždenne", emoji: "🏋️" },
+  extreme: { label: "Beast mode", labelF: "Beast mode", desc: "Fyzická práca + denný tréning", emoji: "🦍" },
 };
 
 export const GOAL_LABELS: Record<Goal, { label: string; desc: string; emoji: string }> = {

@@ -7,6 +7,7 @@ import { ACTIVITY_LABELS, GOAL_LABELS, computeTargets, type Activity, type Goal,
 import type { Meal, Settings } from "@/lib/types";
 import { AuthForm } from "@/components/AuthForm";
 import { deleteEverything, signOut, syncNow } from "@/lib/sync";
+import { MASCOT_SHORT, g } from "@/lib/voice";
 
 /* ---------- malé stavebné kocky ---------- */
 
@@ -150,7 +151,7 @@ function ProfileForm({ profile }: { profile: Profile }) {
           maxLength={40}
           value={draft.name}
           onChange={(e) => set("name", e.target.value)}
-          placeholder="Ako ťa má Paťo volať?"
+          placeholder={`Ako ťa má ${MASCOT_SHORT[draft.sex]} volať?`}
           className={`${inputCls} ${bad.name ? "!border-kp-siren" : ""}`}
           style={{ fontSize: 17 }}
         />
@@ -170,7 +171,7 @@ function ProfileForm({ profile }: { profile: Profile }) {
         <NumberField id="kp-height" label="Výška" unit="cm" value={draft.heightCm} onChange={(v) => set("heightCm", v)} invalid={bad.heightCm} />
         <NumberField id="kp-weight" label="Váha" unit="kg" value={draft.weightKg} onChange={(v) => set("weightKg", v)} invalid={bad.weightKg} />
       </div>
-      {(bad.age || bad.heightCm || bad.weightKg) && <p className="-mt-2 text-sm font-extrabold text-kp-siren-ink">Tieto čísla si si vymyslel. Oprav to.</p>}
+      {(bad.age || bad.heightCm || bad.weightKg) && <p className="-mt-2 text-sm font-extrabold text-kp-siren-ink">{g(draft.sex, "Tieto čísla si si vymyslel. Oprav to.", "Tieto čísla nesedia. Skontroluj ich.")}</p>}
 
       <div>
         <FieldLabel>Aktivita</FieldLabel>
@@ -191,7 +192,7 @@ function ProfileForm({ profile }: { profile: Profile }) {
                   {l.emoji}
                 </span>
                 <span className="min-w-0 flex-1 text-[15px] font-black leading-tight">
-                  {l.label} <span className={`text-[12px] font-bold ${sel ? "text-kp-blue-ink/80" : "text-kp-ink-2"}`}>· {l.desc}</span>
+                  {g(draft.sex, l.label, l.labelF)} <span className={`text-[12px] font-bold ${sel ? "text-kp-blue-ink/80" : "text-kp-ink-2"}`}>· {l.desc}</span>
                 </span>
               </button>
             );
@@ -332,7 +333,7 @@ function importBackup(raw: string): number {
 }
 
 function AccountSection() {
-  const { sync } = useAppState();
+  const { sync, profile } = useAppState();
   const [busy, setBusy] = useState(false);
   const pending = Object.keys(sync.dirtyMeals).length + sync.deletedMeals.length + (sync.profileDirty ? 1 : 0);
 
@@ -357,7 +358,7 @@ function AccountSection() {
   return (
     <section className="card-3d space-y-3 p-4">
       <div>
-        <div className="kp-overline text-kp-muted">Prihlásený</div>
+        <div className="kp-overline text-kp-muted">{g(profile?.sex, "Prihlásený", "Prihlásená")}</div>
         <div className="break-all text-[17px] font-black">{sync.email}</div>
         <button type="button" onClick={() => void syncNow()} className="kp-caption mt-1 text-left">
           {pending ? `☁️ Čaká na odoslanie: ${pending}` : "✅ Všetko je uložené v účte"}

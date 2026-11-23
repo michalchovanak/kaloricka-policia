@@ -2,20 +2,36 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from "react";
 import { retryMeal } from "@/lib/capture";
-import { timeLabel } from "@/lib/dates";
+import { dayKey, whenLabel } from "@/lib/dates";
+import { g } from "@/lib/voice";
 import { itemTotals, mealTotals } from "@/lib/meals";
 import { actions, useAppState } from "@/lib/store";
 import { haptic } from "./confetti";
 import { Mascot, MascotBubble } from "./Mascot";
 import { Sheet } from "./Sheet";
 
-const THINKING = [
-  "Ukáž, čo si to zase natlačil…",
-  "Hľadám skrytý olej. Vždy tam je.",
-  "Vypočúvam omáčku. Mlčí, sviňa.",
-  "Vážim porciu. Vyzerá to zle.",
-  "Spisujem zápisnicu…",
-]
+const THINKING = {
+  male: [
+    "Ukáž, čo si to zase natlačil…",
+    "Hľadám skrytý olej. Vždy tam je.",
+    "Vypočúvam omáčku. Mlčí, sviňa.",
+    "Vážim porciu. Vyzerá to zle.",
+    "Spisujem zápisnicu…",
+  ],
+  female: [
+    "Ukáž, čo dobré máme…",
+    "Hľadám skrytý olej. Vždy tam je.",
+    "Vypočúvam dresing. Zatiaľ mlčí.",
+    "Vážim porciu okom aj zobákom.",
+    "Spisujem zápisnicu…",
+  ],
+};
+
+/** ISO → hodnota pre <input type="datetime-local"> v lokálnom čase. */
+function toLocalInput(iso: string) {
+  const d = new Date(iso);
+  return `${dayKey(d)}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
 
 const PORTIONS = [
   { v: 0.5, l: "½" },
@@ -25,7 +41,9 @@ const PORTIONS = [
 ];
 
 export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean; onClose: () => void }) {
-  const { meals } = useAppState();
+  const { meals, profile } = useAppState();
+  const sex = profile?.sex;
+  const thinking = THINKING[sex ?? "male"];
   const meal = meals.find((m) => m.id === id) ?? null;
   const [line, setLine] = useState(0);
   const [caption, setCaption] = useState("");
@@ -34,9 +52,9 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
 
   useEffect(() => {
     if (meal?.status !== "analyzing") return;
-    const t = setInterval(() => setLine((l) => (l + 1) % THINKING.length), 2200);
+    const t = setInterval(() => setLine((l) => (l + 1) % thinking.length), 2200);
     return () => clearInterval(t);
-  }, [meal?.status]);
+  }, [meal?.status, thinking.length]);
 
   useEffect(() => {
     if (!meal) {
@@ -65,7 +83,7 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
           <img src={meal.photo} alt="" className={`aspect-[4/3] w-full object-cover ${meal.status === "analyzing" ? "brightness-90" : ""}`} />
           {meal.status === "analyzing" && <div className="kp-scan absolute inset-x-0 h-16" />}
           <div className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold">
-            {timeLabel(meal.createdAt)}
+            {whenLabel(meal.createdAt)}
           </div>
         </div>
       )}
@@ -73,7 +91,7 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
       {meal.status === "analyzing" && (
         <div className="py-6 text-center">
           <Mascot mood="watching" size={120} bob className="mx-auto" />
-          <p key={line} className="kp-h3 kp-pop-in mt-2">{THINKING[line]}</p>
+          <p key={line} className="kp-h3 kp-pop-in mt-2">{thinking[line % thinking.length]}</p>
           <button className="btn-3d btn-3d--secondary btn-3d--block mt-5" onClick={onClose}>Zavrieť</button>
         </div>
       )}
@@ -99,6 +117,9 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
             <Chip label="bielkoviny" value={tot.proteinG} unit="g" color="var(--kp-protein)" tint="var(--kp-protein-tint)" />
             <Chip label="cukor" value={tot.addedSugarG} unit="g" color="var(--kp-sugar)" tint="var(--kp-sugar-tint)" />
           </div>
+          <p className="kp-num mt-2 text-center text-[13px] font-extrabold text-kp-ink-2">
+            tuky <b className="text-kp-ink">{Math.round(tot.fatG)} g</b> · vláknina <b className="text-kp-ink">{Math.round(tot.fiberG)} g</b> · sacharidy <b className="text-kp-ink">{Math.round(tot.carbsG)} g</b>
+          </p>
 
           {meal.verdict && (
             <MascotBubble mood={tot.kcal > 900 || tot.addedSugarG > 25 ? "angry" : tot.proteinG >= 30 ? "approve" : "grumpy"} size={76} className="mt-4">
@@ -106,7 +127,7 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
             </MascotBubble>
           )}
 
-          <div className="kp-overline mt-2 text-kp-muted">Koľko si toho zjedol</div>
+          <div className="kp-overline mt-2 text-kp-muted">{g(sex, "Koľko si toho zjedol", "Koľko si toho zjedla")}</div>
           <div className="mt-2 grid grid-cols-4 gap-2">
             {PORTIONS.map((p) => (
               <button
@@ -118,6 +139,21 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
               </button>
             ))}
           </div>
+
+          <label className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-kp-sunken px-3 py-2">
+            <span className="kp-overline text-kp-muted">🕒 Kedy</span>
+            <input
+              type="datetime-local"
+              value={toLocalInput(meal.createdAt)}
+              max={toLocalInput(new Date().toISOString())}
+              onChange={(e) => {
+                const d = new Date(e.target.value);
+                if (Number.isNaN(d.getTime())) return;
+                actions.updateMeal(meal.id, { createdAt: d.toISOString(), dayKey: dayKey(d) });
+              }}
+              className="kp-num min-w-0 bg-transparent text-right font-extrabold text-kp-ink outline-none"
+            />
+          </label>
 
           <div className="kp-overline mt-4 text-kp-muted">Dôkazy</div>
           <ul className="mt-2 space-y-2">
@@ -158,7 +194,7 @@ export function MealSheet({ id, onClose }: { id: string | null; fresh?: boolean;
               </button>
             </div>
           ) : (
-            <button className="btn-ghost mt-2 w-full" onClick={() => setEditing(true)}>✏️ Zle som to odhadol? Napíš čo to bolo</button>
+            <button className="btn-ghost mt-2 w-full" onClick={() => setEditing(true)}>✏️ {g(sex, "Zle som to odhadol?", "Zle som to odhadla?")} Napíš, čo to bolo</button>
           )}
 
           <button className="btn-3d btn-3d--success btn-3d--block mt-3" onClick={onClose}>Hotovo</button>

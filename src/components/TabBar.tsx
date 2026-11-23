@@ -12,15 +12,16 @@ const TABS = [
 
 export function TabBar() {
   const path = usePathname();
-  const { openCamera } = useCapture();
+  const { openPicker } = useCapture();
   return (
     <nav className="kp-tabbar" aria-label="Navigácia">
       {TABS.map(({ href, label, Icon }) =>
         !Icon ? (
           <div key="cam" className="relative flex justify-center">
             <button
-              onClick={openCamera}
-              aria-label="Odfotiť jedlo"
+              onClick={openPicker}
+              aria-label="Pridať jedlo: odfotiť alebo z galérie"
+              aria-haspopup="menu"
               className="btn-3d btn-3d--lg absolute -top-7 !h-[72px] !w-[72px] !min-h-0 !rounded-full !p-0"
               style={{ ["--_depth" as string]: "6px" }}
             >

@@ -6,6 +6,7 @@ import { dayTotals } from "./meals";
 import { computeTargets, type Profile, type Targets } from "./nutrition";
 import type { Meal } from "./types";
 import type { Mood } from "@/components/Mascot";
+import type { Sex } from "./nutrition";
 
 export const MAX_STARS = 5;
 export const ARREST_HOUR = 19;
@@ -42,15 +43,16 @@ function pastDayDelta(meals: Meal[], day: string, t: Targets): number {
   return d;
 }
 
-function todayOffenses(meals: Meal[], today: string, t: Targets, now: Date): Offense[] {
+function todayOffenses(meals: Meal[], today: string, t: Targets, now: Date, sex: Sex): Offense[] {
+  const f = sex === "female";
   const done = meals.filter((m) => m.dayKey === today && m.status === "done");
   const tot = dayTotals(meals, today);
   const list: Offense[] = [];
   const over = tot.kcal / t.kcal - 1;
-  if (over > 0.25) list.push({ text: `Prežratý o ${Math.round(tot.kcal - t.kcal)} kcal`, stars: 2 });
+  if (over > 0.25) list.push({ text: `${f ? "Plán prestrelený" : "Prežratý"} o ${Math.round(tot.kcal - t.kcal)} kcal`, stars: 2 });
   else if (over > 0.1) list.push({ text: `Nad plánom o ${Math.round(tot.kcal - t.kcal)} kcal`, stars: 1 });
   if (tot.addedSugarG > t.freeSugarMaxG) list.push({ text: `Cukor ${Math.round(tot.addedSugarG)} g, limit ${t.freeSugarMaxG} g`, stars: 1 });
-  if (done.length === 0 && now.getHours() >= 13) list.push({ text: "Je poobede a nič si nezapísal", stars: 1 });
+  if (done.length === 0 && now.getHours() >= 13) list.push({ text: `Je poobede a nič si nezapísal${f ? "a" : ""}`, stars: 1 });
   return list;
 }
 
@@ -58,7 +60,8 @@ export function computeWanted(meals: Meal[], profile: Profile, onboardedAt?: str
   const t = computeTargets(profile);
   const today = dayKey(now);
   const firstLog = meals.reduce<string | null>((min, m) => (!min || m.dayKey < min ? m.dayKey : min), null);
-  const start = [firstLog, onboardedAt ? dayKey(new Date(onboardedAt)) : null].filter(Boolean).sort()[0] ?? today;
+  // História začína dňom registrácie: fotka z galérie spred registrácie nesmie pridať hviezdy za prázdne dni.
+  const start = (onboardedAt ? dayKey(new Date(onboardedAt)) : firstLog) ?? today;
 
   // História: prejdi minulé dni. Kto večer skončil na 5 ★, odsedel si noc a začína na 2 ★.
   let heat = 0;
@@ -72,7 +75,7 @@ export function computeWanted(meals: Meal[], profile: Profile, onboardedAt?: str
   // Včerajšiu basu si už odsedel (je po 7:00) → začína na 2 ★.
   if (jailedLastNight && now.getHours() >= RELEASE_HOUR) heat = 2;
 
-  const offenses = todayOffenses(meals, today, t, now);
+  const offenses = todayOffenses(meals, today, t, now, profile.sex);
   const history = Math.floor(heat);
   const total = clamp(heat + offenses.reduce((s, o) => s + o.stars, 0));
   const stars = Math.floor(total + 1e-9);
@@ -99,7 +102,18 @@ export function computeWanted(meals: Meal[], profile: Profile, onboardedAt?: str
   };
 }
 
-export function wantedLine(w: Wanted, mealsToday: number): { mood: Mood; text: string } {
+export function wantedLine(w: Wanted, mealsToday: number, sex: Sex = "male"): { mood: Mood; text: string } {
+  if (sex === "female") {
+    // Kačka: tvrdá na jedlo, nikdy na telo. Basa = zapečatená kuchyňa, nie hladovka za trest.
+    if (w.jailed) return { mood: "jail", text: "Kuchyňa je zapečatená do rána. Čaj a voda áno, chladnička nie." };
+    if (w.warrant) return { mood: "angry", text: `Zatykač je vydaný. O ${ARREST_HOUR}:00 ti zapečatím kuchyňu, kvak.` };
+    if (w.stars >= 4) return { mood: "angry", text: "Ešte jeden zákusok a vyťahujem putá. Myslím to vážne." };
+    if (w.stars === 3) return { mood: "angry", text: "Preboha, čo sa tu dnes deje? Radar už pípa." };
+    if (w.stars === 2) return { mood: "grumpy", text: "Dve hviezdy. Ešte to otočíš, ale každé sústo vidím." };
+    if (w.stars === 1) return { mood: "grumpy", text: "Jedna hviezda. Nič hrozné, ale mám ťa na očiach." };
+    if (mealsToday === 0) return { mood: "watching", text: "Čo si dnes jedla? Odfoť to, nech ťa nemusím hľadať." };
+    return { mood: "approve", text: "Čistý spis. Takto vyzerá frajerka. Nepokaz mi to." };
+  }
   if (w.jailed) return { mood: "jail", text: "Si v base, kamoš. Do rána žereš akurát tak vzduch." };
   if (w.warrant) return { mood: "angry", text: `Zatykač je vydaný. O ${ARREST_HOUR}:00 si pre teba prídem, ty žrút.` };
   if (w.stars >= 4) return { mood: "angry", text: "Ešte jeden rezeň a nasadím ti putá. Vážne." };
