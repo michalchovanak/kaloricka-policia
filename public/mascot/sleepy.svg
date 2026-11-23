@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-labelledby="kp-sleepy-title">
+  <title id="kp-sleepy-title">Paťo – spí, zatiaľ žiadne jedlo</title>
+  <defs>
+    <clipPath id="kp-sleepy-body"><circle cx="100" cy="118" r="62"/></clipPath>
+  </defs>
+  <ellipse cx="100" cy="189" rx="50" ry="7" fill="#1E2446" opacity=".12"/>
+  <ellipse cx="78" cy="178" rx="15" ry="9" fill="#C73422"/>
+  <ellipse cx="122" cy="178" rx="15" ry="9" fill="#C73422"/>
+  <g clip-path="url(#kp-sleepy-body)">
+    <rect x="30" y="50" width="140" height="140" fill="#E3412D"/>
+    <circle cx="94" cy="111" r="60" fill="#FF5B45"/>
+  </g>
+  <ellipse cx="62" cy="98" rx="11" ry="6" fill="#FFFFFF" opacity=".35" transform="rotate(-40 62 98)"/>
+  <path d="M138 62 C146 48 162 44 170 52 C164 62 150 68 138 62Z" fill="#43C45B"/>
+  <path d="M142 61 C150 56 158 53 165 53" fill="none" stroke="#2F9944" stroke-width="2.5" stroke-linecap="round"/>
+  <ellipse cx="42" cy="138" rx="10" ry="16" fill="#E3412D" transform="rotate(18 42 138)"/>
+  <ellipse cx="158" cy="138" rx="10" ry="16" fill="#E3412D" transform="rotate(-18 158 138)"/>
+  <path d="M128.00 144.00 L130.70 150.28 L137.51 150.91 L132.37 155.42 L133.88 162.09 L128.00 158.60 L122.12 162.09 L123.63 155.42 L118.49 150.91 L125.30 150.28Z" fill="#FFC21A" stroke="#D99A00" stroke-width="2.5" stroke-linejoin="round"/>
+  <ellipse cx="63" cy="124" rx="10" ry="6" fill="#FF9E8C"/>
+  <ellipse cx="137" cy="124" rx="10" ry="6" fill="#FF9E8C"/>
+  <path d="M71 111 Q80 118 89 111" fill="none" stroke="#1E2446" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M111 111 Q120 118 129 111" fill="none" stroke="#1E2446" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="134" rx="5" ry="6" fill="#6B1A22"/>
+  <circle cx="111" cy="143" r="7" fill="#DFF1FF" stroke="#9FC7F0" stroke-width="2"/>
+  <circle cx="109" cy="141" r="1.8" fill="#FFFFFF"/>
+  <g transform="rotate(10 100 60) translate(2 5)">
+    <path d="M44 34 Q100 0 156 34 Q158 46 144 48 L56 48 Q42 46 44 34Z" fill="#3B5BF6"/>
+    <ellipse cx="74" cy="25" rx="13" ry="4.5" fill="#FFFFFF" opacity=".3" transform="rotate(-16 74 25)"/>
+    <rect x="58" y="44" width="84" height="12" fill="#3B5BF6"/>
+    <rect x="55" y="52" width="90" height="14" rx="6" fill="#2A40C2"/>
+    <path d="M54 64 Q100 82 146 64 Q150 70 142 74 Q100 90 58 74 Q50 70 54 64Z" fill="#1E2446"/>
+    <circle cx="100" cy="36" r="11" fill="#FFC21A" stroke="#D99A00" stroke-width="3"/>
+    <path d="M100.00 30.30 L101.59 34.32 L105.90 34.58 L102.57 37.33 L103.64 41.52 L100.00 39.20 L96.36 41.52 L97.43 37.33 L94.10 34.58 L98.41 34.32Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.2" stroke-linejoin="round"/>
+  </g>
+  <path d="M158 28 H172 L158 42 H172" fill="none" stroke="#3B5BF6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M178 8 H188 L178 18 H188" fill="none" stroke="#3B5BF6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

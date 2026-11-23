@@ -1,0 +1,486 @@
+/* ==========================================================================
+   Kalorická polícia — design tokens
+   Mobile-first, playful, chunky. See docs/design-system.md for usage rules.
+   Font: Nunito (Google Fonts, OFL) — load weights 600,700,800,900 with latin-ext
+   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap&subset=latin-ext" rel="stylesheet">
+   ========================================================================== */
+
+:root {
+  /* ---------- Brand ---------- */
+  --kp-blue:            #3B5BF6; /* "Hliadková modrá" — primary */
+  --kp-blue-hover:      #5572FF;
+  --kp-blue-lip:        #2A40C2;
+  --kp-blue-tint:       #E5EAFF;
+  --kp-blue-ink:        #2A40C2;
+
+  --kp-siren:           #FF4F64; /* "Siréna" — danger / strict / streak beacon */
+  --kp-siren-hover:     #FF6679;
+  --kp-siren-lip:       #D42F48;
+  --kp-siren-tint:      #FFE6E9;
+  --kp-siren-ink:       #B0203A;
+
+  --kp-gold:            #FFC21A; /* "Odznak" — rewards, XP, badges */
+  --kp-gold-hover:      #FFCC3D;
+  --kp-gold-lip:        #D99A00;
+  --kp-gold-tint:       #FFF5D6;
+  --kp-gold-ink:        #8A5F00;
+
+  --kp-mint:            #1FC77E; /* "V poriadku" — success / correct */
+  --kp-mint-hover:      #3AD28F;
+  --kp-mint-lip:        #13985E;
+  --kp-mint-tint:       #DDF7EA;
+  --kp-mint-ink:        #0E7A4B;
+
+  /* ---------- Mascot (Paťo) ---------- */
+  --kp-tomato:          #FF5B45;
+  --kp-tomato-shade:    #E3412D;
+  --kp-tomato-deep:     #C73422;
+  --kp-cheek:           #FF9E8C;
+  --kp-leaf:            #43C45B;
+  --kp-mouth:           #6B1A22;
+  --kp-tongue:          #FF8A9A;
+
+  /* ---------- Neutrals ---------- */
+  --kp-ink:             #1E2446; /* primary text, icons, outlines */
+  --kp-ink-2:           #4A5072; /* secondary text */
+  --kp-muted:           #8A8FA8; /* captions, placeholders */
+  --kp-line:            #E6E2DA; /* card borders, dividers */
+  --kp-line-strong:     #D6D1C6; /* lip under white cards / secondary buttons */
+  --kp-surface:         #FFFFFF;
+  --kp-bg:              #FBF7F0; /* warm cream app background */
+  --kp-bg-sunken:       #F3EEE5; /* track of progress bars, ring backgrounds */
+  --kp-disabled:        #E9E6DF;
+  --kp-disabled-lip:    #D6D2C9;
+  --kp-disabled-ink:    #B3AFA6;
+  --kp-scrim:           rgba(30, 36, 70, 0.48);
+
+  /* ---------- Macros (base / lip / tint) ---------- */
+  --kp-kcal:            #FF7A1A;
+  --kp-kcal-lip:        #D65C00;
+  --kp-kcal-tint:       #FFEDDF;
+
+  --kp-protein:         #F0436B;
+  --kp-protein-lip:     #C2264F;
+  --kp-protein-tint:    #FDE4EA;
+
+  --kp-carbs:           #2FA4F0;
+  --kp-carbs-lip:       #1A7FC2;
+  --kp-carbs-tint:      #E0F2FD;
+
+  --kp-sugar:           #B85CF5;
+  --kp-sugar-lip:       #8E3BCC;
+  --kp-sugar-tint:      #F4E8FE;
+
+  --kp-fat:             #FFB020;
+  --kp-fat-lip:         #D68A00;
+  --kp-fat-tint:        #FFF3DA;
+
+  --kp-fiber:           #43C45B;
+  --kp-fiber-lip:       #2F9944;
+  --kp-fiber-tint:      #E3F7E6;
+
+  /* ---------- Semantic aliases ---------- */
+  --kp-primary:         var(--kp-blue);
+  --kp-primary-lip:     var(--kp-blue-lip);
+  --kp-success:         var(--kp-mint);
+  --kp-success-lip:     var(--kp-mint-lip);
+  --kp-warning:         var(--kp-gold);
+  --kp-warning-lip:     var(--kp-gold-lip);
+  --kp-danger:          var(--kp-siren);
+  --kp-danger-lip:      var(--kp-siren-lip);
+  --kp-xp:              var(--kp-gold);
+  --kp-streak:          var(--kp-siren);
+
+  /* ---------- Typography ---------- */
+  --kp-font:            "Nunito", ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --kp-fs-display:      2.5rem;   /* 40 — celebration numbers */
+  --kp-lh-display:      1.1;
+  --kp-fs-h1:           1.75rem;  /* 28 */
+  --kp-lh-h1:           1.2;
+  --kp-fs-h2:           1.375rem; /* 22 */
+  --kp-lh-h2:           1.25;
+  --kp-fs-h3:           1.125rem; /* 18 */
+  --kp-lh-h3:           1.3;
+  --kp-fs-body-lg:      1.0625rem;/* 17 — mascot bubbles, option cards */
+  --kp-lh-body-lg:      1.4;
+  --kp-fs-body:         1rem;     /* 16 — never smaller for inputs (iOS zoom) */
+  --kp-lh-body:         1.45;
+  --kp-fs-button:       0.9375rem;/* 15 — uppercase */
+  --kp-lh-button:       1.2;
+  --kp-fs-caption:      0.8125rem;/* 13 */
+  --kp-lh-caption:      1.35;
+  --kp-fs-overline:     0.75rem;  /* 12 — uppercase tile labels */
+  --kp-lh-overline:     1.2;
+
+  --kp-fw-body:         700;
+  --kp-fw-strong:       800;
+  --kp-fw-heavy:        900;
+  --kp-tracking-caps:   0.06em;
+
+  /* ---------- Spacing (4-pt) ---------- */
+  --kp-space-1:  4px;
+  --kp-space-2:  8px;
+  --kp-space-3:  12px;
+  --kp-space-4:  16px;
+  --kp-space-5:  20px;
+  --kp-space-6:  24px;
+  --kp-space-8:  32px;
+  --kp-space-10: 40px;
+  --kp-space-12: 48px;
+  --kp-space-16: 64px;
+  --kp-gutter:   var(--kp-space-4); /* screen side padding */
+
+  /* ---------- Radii ---------- */
+  --kp-radius-xs:   8px;   /* chips, small tags */
+  --kp-radius-sm:   12px;  /* inputs, small buttons */
+  --kp-radius-md:   16px;  /* buttons, option cards */
+  --kp-radius-lg:   20px;  /* cards, stat tiles */
+  --kp-radius-xl:   28px;  /* bottom sheets, celebration panels */
+  --kp-radius-pill: 999px;
+
+  /* ---------- Borders & 3D lip ---------- */
+  --kp-border:      2px;   /* every card/option has a visible 2px border */
+  --kp-lip:         4px;   /* button / card lip depth */
+  --kp-lip-sm:      3px;   /* chips, small buttons */
+  --kp-lip-lg:      6px;   /* hero buttons, path nodes */
+
+  /* ---------- Shadows (used sparingly — the lip is the "shadow") ---------- */
+  --kp-shadow-float:  0 8px 24px rgba(30, 36, 70, 0.14);  /* toasts, sheets */
+  --kp-shadow-bubble: 0 2px 0 var(--kp-line-strong);       /* speech bubble lip */
+
+  /* ---------- Sizes ---------- */
+  --kp-tap:          48px;  /* minimum touch target */
+  --kp-btn-h:        52px;
+  --kp-btn-h-sm:     40px;
+  --kp-tabbar-h:     64px;
+  --kp-topbar-h:     56px;
+  --kp-progress-h:   16px;
+
+  /* ---------- Safe areas ---------- */
+  --kp-safe-top:     env(safe-area-inset-top, 0px);
+  --kp-safe-bottom:  env(safe-area-inset-bottom, 0px);
+  --kp-safe-left:    env(safe-area-inset-left, 0px);
+  --kp-safe-right:   env(safe-area-inset-right, 0px);
+
+  /* ---------- Motion ---------- */
+  --kp-dur-press:    70ms;
+  --kp-dur-fast:     120ms;
+  --kp-dur-base:     200ms;
+  --kp-dur-slow:     320ms;
+  --kp-dur-fill:     600ms;
+  --kp-dur-count:    900ms;
+  --kp-dur-confetti: 1600ms;
+
+  --kp-ease-out:     cubic-bezier(0.22, 1, 0.36, 1);
+  --kp-ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
+  --kp-ease-pop:     cubic-bezier(0.34, 1.56, 0.64, 1);  /* overshoot */
+  --kp-ease-spring:  cubic-bezier(0.18, 1.6, 0.4, 1);    /* bouncier release */
+
+  /* ---------- Z-index ---------- */
+  --kp-z-tabbar:  20;
+  --kp-z-sheet:   40;
+  --kp-z-toast:   60;
+  --kp-z-overlay: 80;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: var(--kp-font);
+  font-weight: var(--kp-fw-body);
+  font-size: var(--kp-fs-body);
+  line-height: var(--kp-lh-body);
+  color: var(--kp-ink);
+  background: var(--kp-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.kp-num { font-variant-numeric: tabular-nums; }
+
+/* Type utilities */
+.kp-display { font-size: var(--kp-fs-display); line-height: var(--kp-lh-display); font-weight: var(--kp-fw-heavy); letter-spacing: -0.01em; }
+.kp-h1      { font-size: var(--kp-fs-h1);      line-height: var(--kp-lh-h1);      font-weight: var(--kp-fw-heavy); }
+.kp-h2      { font-size: var(--kp-fs-h2);      line-height: var(--kp-lh-h2);      font-weight: var(--kp-fw-heavy); }
+.kp-h3      { font-size: var(--kp-fs-h3);      line-height: var(--kp-lh-h3);      font-weight: var(--kp-fw-strong); }
+.kp-body-lg { font-size: var(--kp-fs-body-lg); line-height: var(--kp-lh-body-lg); font-weight: var(--kp-fw-body); }
+.kp-caption { font-size: var(--kp-fs-caption); line-height: var(--kp-lh-caption); font-weight: var(--kp-fw-body); color: var(--kp-ink-2); }
+.kp-overline{ font-size: var(--kp-fs-overline);line-height: var(--kp-lh-overline);font-weight: var(--kp-fw-heavy); text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* ==========================================================================
+   3D button — the signature "lip" effect
+   The lip is a hard, un-blurred box-shadow, so pressing never shifts layout:
+   the face moves down by the lip depth and the shadow shrinks to 0.
+   Usage: <button class="btn-3d">Pokračovať</button>
+          <button class="btn-3d btn-3d--secondary">Teraz nie</button>
+   ========================================================================== */
+
+.btn-3d {
+  --_bg:    var(--kp-blue);
+  --_bg-h:  var(--kp-blue-hover);
+  --_lip:   var(--kp-blue-lip);
+  --_fg:    #FFFFFF;
+  --_bd:    transparent;
+  --_depth: var(--kp-lip);
+
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kp-space-2);
+  min-height: var(--kp-btn-h);
+  padding: 0 var(--kp-space-6);
+  margin-bottom: var(--_depth);          /* reserve room for the lip */
+  border: var(--kp-border) solid var(--_bd);
+  border-radius: var(--kp-radius-md);
+  background: var(--_bg);
+  color: var(--_fg);
+  font-family: var(--kp-font);
+  font-size: var(--kp-fs-button);
+  line-height: var(--kp-lh-button);
+  font-weight: var(--kp-fw-heavy);
+  text-transform: uppercase;
+  letter-spacing: var(--kp-tracking-caps);
+  box-shadow: 0 var(--_depth) 0 0 var(--_lip);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transform: translateY(0);
+  transition:
+    transform var(--kp-dur-fast) var(--kp-ease-spring),
+    box-shadow var(--kp-dur-fast) var(--kp-ease-spring),
+    background-color var(--kp-dur-fast) linear,
+    filter var(--kp-dur-fast) linear;
+}
+
+.btn-3d--block { display: flex; width: 100%; }
+.btn-3d--sm    { --_depth: var(--kp-lip-sm); min-height: var(--kp-btn-h-sm); padding: 0 var(--kp-space-4); border-radius: var(--kp-radius-sm); font-size: var(--kp-fs-caption); }
+.btn-3d--lg    { --_depth: var(--kp-lip-lg); min-height: 60px; }
+
+@media (hover: hover) {
+  .btn-3d:hover { background: var(--_bg-h); }
+}
+
+.btn-3d:active,
+.btn-3d.is-pressed {
+  transform: translateY(var(--_depth));
+  box-shadow: 0 0 0 0 var(--_lip);
+  transition-duration: var(--kp-dur-press);
+  transition-timing-function: var(--kp-ease-out);
+}
+
+.btn-3d:focus-visible {
+  outline: 3px solid var(--kp-blue);
+  outline-offset: 3px;
+}
+
+/* Variants */
+.btn-3d--secondary {           /* white face, grey border + lip, blue label */
+  --_bg:   var(--kp-surface);
+  --_bg-h: #F7F5F1;
+  --_lip:  var(--kp-line-strong);
+  --_fg:   var(--kp-blue);
+  --_bd:   var(--kp-line);
+}
+.btn-3d--success { --_bg: var(--kp-mint);  --_bg-h: var(--kp-mint-hover);  --_lip: var(--kp-mint-lip); }
+.btn-3d--danger  { --_bg: var(--kp-siren); --_bg-h: var(--kp-siren-hover); --_lip: var(--kp-siren-lip); }
+.btn-3d--gold    { --_bg: var(--kp-gold);  --_bg-h: var(--kp-gold-hover);  --_lip: var(--kp-gold-lip); --_fg: var(--kp-ink); }
+.btn-3d--white   { --_bg: #FFFFFF; --_bg-h: #FFFFFF; --_lip: rgba(30,36,70,.18); --_fg: var(--kp-blue); } /* on coloured backgrounds */
+
+/* Ghost: flat text button, no lip (e.g. "TERAZ NIE") */
+.btn-ghost {
+  appearance: none;
+  min-height: var(--kp-tap);
+  padding: 0 var(--kp-space-4);
+  border: 0;
+  background: transparent;
+  color: var(--kp-blue);
+  font: var(--kp-fw-heavy) var(--kp-fs-button)/var(--kp-lh-button) var(--kp-font);
+  text-transform: uppercase;
+  letter-spacing: var(--kp-tracking-caps);
+  border-radius: var(--kp-radius-sm);
+  cursor: pointer;
+  transition: transform var(--kp-dur-fast) var(--kp-ease-spring), opacity var(--kp-dur-fast) linear;
+}
+.btn-ghost:active { transform: scale(0.96); opacity: 0.7; }
+
+/* Disabled — lip stays, colour drains, no press */
+.btn-3d:disabled,
+.btn-3d[aria-disabled="true"] {
+  --_bg: var(--kp-disabled);
+  --_bg-h: var(--kp-disabled);
+  --_lip: var(--kp-disabled-lip);
+  --_fg: var(--kp-disabled-ink);
+  --_bd: transparent;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 var(--_depth) 0 0 var(--_lip);
+}
+
+/* ==========================================================================
+   3D card / option card — same lip language, softer
+   ========================================================================== */
+
+.card-3d {
+  background: var(--kp-surface);
+  border: var(--kp-border) solid var(--kp-line);
+  border-radius: var(--kp-radius-lg);
+  box-shadow: 0 var(--kp-lip) 0 0 var(--kp-line);
+  margin-bottom: var(--kp-lip);
+}
+
+.option-3d {
+  display: flex;
+  align-items: center;
+  gap: var(--kp-space-3);
+  width: 100%;
+  min-height: 60px;
+  padding: var(--kp-space-3) var(--kp-space-4);
+  margin-bottom: var(--kp-lip-sm);
+  background: var(--kp-surface);
+  border: var(--kp-border) solid var(--kp-line);
+  border-radius: var(--kp-radius-md);
+  box-shadow: 0 var(--kp-lip-sm) 0 0 var(--kp-line);
+  color: var(--kp-ink);
+  font: var(--kp-fw-strong) var(--kp-fs-body-lg)/var(--kp-lh-body-lg) var(--kp-font);
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--kp-dur-fast) var(--kp-ease-spring), box-shadow var(--kp-dur-fast) var(--kp-ease-spring),
+              background-color var(--kp-dur-fast) linear, border-color var(--kp-dur-fast) linear;
+}
+.option-3d:active { transform: translateY(var(--kp-lip-sm)); box-shadow: 0 0 0 0 var(--kp-line); transition-duration: var(--kp-dur-press); }
+.option-3d[aria-checked="true"],
+.option-3d.is-selected {
+  background: var(--kp-blue-tint);
+  border-color: var(--kp-blue);
+  box-shadow: 0 var(--kp-lip-sm) 0 0 var(--kp-blue);
+  color: var(--kp-blue-ink);
+}
+
+/* ==========================================================================
+   Progress bar (onboarding top bar, XP bar, macro bars)
+   ========================================================================== */
+
+.progress-3d {
+  --_fill: var(--kp-blue);
+  position: relative;
+  height: var(--kp-progress-h);
+  border-radius: var(--kp-radius-pill);
+  background: var(--kp-bg-sunken);
+  overflow: hidden;
+}
+.progress-3d > span {
+  position: absolute; inset: 0 auto 0 0;
+  width: var(--value, 0%);
+  min-width: var(--kp-progress-h);
+  border-radius: inherit;
+  background: var(--_fill);
+  transition: width var(--kp-dur-fill) var(--kp-ease-out);
+}
+/* glossy highlight stripe on the fill */
+.progress-3d > span::after {
+  content: "";
+  position: absolute; left: 8px; right: 8px; top: 3px;
+  height: 4px; border-radius: var(--kp-radius-pill);
+  background: rgba(255,255,255,.35);
+}
+
+/* ==========================================================================
+   Motion utilities
+   ========================================================================== */
+
+@keyframes kp-pop-in {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes kp-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes kp-wiggle {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-6deg); }
+  40% { transform: rotate(5deg); }
+  60% { transform: rotate(-3deg); }
+  80% { transform: rotate(2deg); }
+}
+@keyframes kp-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes kp-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes kp-siren {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255,79,100,0)); }
+  50%      { filter: drop-shadow(0 0 10px rgba(255,79,100,.65)); }
+}
+@keyframes kp-confetti-fall {
+  0%   { transform: translate3d(0, -20vh, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--drift, 0px), 105vh, 0) rotate(var(--spin, 540deg)); opacity: 1; }
+}
+
+.kp-pop-in  { animation: kp-pop-in var(--kp-dur-slow) var(--kp-ease-pop) both; }
+.kp-bob     { animation: kp-bob 2.4s var(--kp-ease-in-out) infinite; }
+.kp-wiggle  { animation: kp-wiggle 480ms var(--kp-ease-out); transform-origin: 50% 90%; }
+.kp-shake   { animation: kp-shake 360ms var(--kp-ease-out); }
+.kp-siren   { animation: kp-siren 1.6s ease-in-out infinite; }
+
+/* Stagger helper: style="--i: 2" */
+.kp-stagger { animation-delay: calc(var(--i, 0) * 60ms); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .kp-confetti { display: none; }
+}
+
+/* ==========================================================================
+   Layout helpers — iPhone safe areas
+   Requires <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+   ========================================================================== */
+
+.kp-screen {
+  min-height: 100dvh;
+  padding-top: calc(var(--kp-safe-top) + var(--kp-space-2));
+  padding-left: calc(var(--kp-safe-left) + var(--kp-gutter));
+  padding-right: calc(var(--kp-safe-right) + var(--kp-gutter));
+  padding-bottom: calc(var(--kp-tabbar-h) + var(--kp-safe-bottom) + var(--kp-space-4));
+  box-sizing: border-box;
+}
+
+/* Sticky footer CTA area (onboarding, celebration) */
+.kp-footer-cta {
+  position: sticky; bottom: 0;
+  padding: var(--kp-space-4) var(--kp-gutter) calc(var(--kp-space-4) + var(--kp-safe-bottom));
+  background: linear-gradient(to bottom, rgba(251,247,240,0), var(--kp-bg) 24%);
+}
+
+.kp-tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: var(--kp-z-tabbar);
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  height: calc(var(--kp-tabbar-h) + var(--kp-safe-bottom));
+  padding: 0 calc(var(--kp-safe-right) + var(--kp-space-2)) var(--kp-safe-bottom) calc(var(--kp-safe-left) + var(--kp-space-2));
+  background: var(--kp-surface);
+  border-top: var(--kp-border) solid var(--kp-line);
+  box-sizing: border-box;
+}

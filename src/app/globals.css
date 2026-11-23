@@ -1,26 +1,50 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "./tokens.css" layer(components);
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--kp-font);
+  --color-kp-blue: var(--kp-blue);
+  --color-kp-blue-tint: var(--kp-blue-tint);
+  --color-kp-blue-ink: var(--kp-blue-ink);
+  --color-kp-siren: var(--kp-siren);
+  --color-kp-siren-tint: var(--kp-siren-tint);
+  --color-kp-siren-ink: var(--kp-siren-ink);
+  --color-kp-gold: var(--kp-gold);
+  --color-kp-gold-tint: var(--kp-gold-tint);
+  --color-kp-gold-ink: var(--kp-gold-ink);
+  --color-kp-mint: var(--kp-mint);
+  --color-kp-mint-tint: var(--kp-mint-tint);
+  --color-kp-mint-ink: var(--kp-mint-ink);
+  --color-kp-ink: var(--kp-ink);
+  --color-kp-ink-2: var(--kp-ink-2);
+  --color-kp-muted: var(--kp-muted);
+  --color-kp-line: var(--kp-line);
+  --color-kp-line-strong: var(--kp-line-strong);
+  --color-kp-surface: var(--kp-surface);
+  --color-kp-bg: var(--kp-bg);
+  --color-kp-sunken: var(--kp-bg-sunken);
+  --color-kp-kcal: var(--kp-kcal);
+  --color-kp-kcal-tint: var(--kp-kcal-tint);
+  --color-kp-protein: var(--kp-protein);
+  --color-kp-protein-tint: var(--kp-protein-tint);
+  --color-kp-carbs: var(--kp-carbs);
+  --color-kp-carbs-tint: var(--kp-carbs-tint);
+  --color-kp-sugar: var(--kp-sugar);
+  --color-kp-sugar-tint: var(--kp-sugar-tint);
+  --color-kp-fat: var(--kp-fat);
+  --color-kp-fat-tint: var(--kp-fat-tint);
+  --color-kp-fiber: var(--kp-fiber);
+  --color-kp-fiber-tint: var(--kp-fiber-tint);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html, body { overscroll-behavior-y: none; }
+body { min-height: 100dvh; }
+input, select, textarea { font-size: 16px; font-family: inherit; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes kp-scan { 0% { top: -20%; } 100% { top: 100%; } }
+.kp-scan {
+  background: linear-gradient(to bottom, transparent, rgba(59, 91, 246, 0.45), transparent);
+  animation: kp-scan 1.4s var(--kp-ease-in-out) infinite alternate;
 }
